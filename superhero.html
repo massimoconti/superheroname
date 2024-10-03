@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea il tuo nome da super-eroe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 1em;
+            color: #777;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:disabled {
+            background-color: #aaa;
+        }
+
+        .progress-container {
+            display: none;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background-color: #007bff;
+            transition: width 2s;
+            position: relative;
+        }
+
+        .progress-bar span {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .hero-name {
+            display: none;
+            margin-top: 30px;
+            font-size: 1.5em;
+            color: #333;
+            opacity: 0;
+            transition: opacity 1.5s;
+        }
+
+        .hero-name.active {
+            opacity: 1;
+        }
+
+        .hero-link {
+            margin-top: 20px;
+        }
+
+        .hero-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .hero-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crea il tuo nome da super-eroe</h1>
+    <h2>powered by AI</h2>
+
+    <div id="input-section">
+        <input type="text" id="firstName" placeholder="Inserisci il tuo nome">
+        <input type="text" id="lastName" placeholder="Inserisci il tuo cognome">
+        <br>
+        <button onclick="createHeroName()">Crea</button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">
+            <span id="progressPercent">0%</span>
+        </div>
+    </div>
+
+    <div class="hero-name" id="heroName">
+        <p>Ecco il tuo nome da super-eroe:</p>
+        <p id="generatedName"></p>
+    </div>
+
+    <div class="hero-link" id="heroLink" style="display: none;">
+        <a href="#" onclick="resetApp()">Creane un altro</a>
+    </div>
+
+    <script>
+        function createHeroName() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+
+            if (firstName && lastName) {
+                // Nascondi input e pulsante
+                document.getElementById('input-section').style.display = 'none';
+
+                // Mostra barra di caricamento
+                document.querySelector('.progress-container').style.display = 'block';
+                let progressBar = document.getElementById('progressBar');
+                let progressPercent = document.getElementById('progressPercent');
+                progressBar.style.width = '0%';
+                progressPercent.textContent = '0%';
+
+                let progress = 0;
+                let interval = setInterval(function () {
+                    progress += 10;
+                    progressBar.style.width = progress + '%';
+                    progressPercent.textContent = progress + '%';
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            showHeroName(firstName, lastName);
+                        }, 500); // Aggiungi un breve ritardo per effetto visivo
+                    }
+                }, 300); // Simula il caricamento ogni 300ms
+            } else {
+                alert('Per favore, inserisci nome e cognome.');
+            }
+        }
+
+        function showHeroName(firstName, lastName) {
+            const heroFirstName = lastName.charAt(0) + firstName.slice(1);
+            const heroLastName = firstName.charAt(0) + lastName.slice(1);
+
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('heroName').style.display = 'block';
+            document.getElementById('generatedName').textContent = heroFirstName + " " + heroLastName;
+
+            // Aggiungi l'animazione per far comparire il nome
+            setTimeout(() => {
+                document.getElementById('heroName').classList.add('active');
+            }, 100);
+
+            // Mostra il link per "crearne un altro"
+            document.getElementById('heroLink').style.display = 'block';
+        }
+
+        function resetApp() {
+            // Nascondi la schermata finale e il link
+            document.getElementById('heroName').style.display = 'none';
+            document.getElementById('heroName').classList.remove('active');
+            document.getElementById('heroLink').style.display = 'none';
+
+            // Ripristina la sezione di input
+            document.getElementById('input-section').style.display = 'block';
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+        }
+    </script>
+</body>
+</html>
